@@ -1217,7 +1217,7 @@ define([
                         }
                     });
 
-                    me.customPluginsDlg[frameId].show();
+                    me.customPluginsDlg[frameId].show(variation.x, variation.y);
                 }
             }
         },
