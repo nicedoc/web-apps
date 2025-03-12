@@ -48,7 +48,7 @@
                     <div class="elset font-attr">
                         <span class="btn-slot" id="slot-btn-bold"></span>
                         <span class="btn-slot" id="slot-btn-italic"></span>
-                        <span class="btn-slot" id="slot-btn-underline"></span>
+                        <span class="btn-slot split" id="slot-btn-underline"></span>
                         <span class="btn-slot" id="slot-btn-strikeout"></span>
                         <span class="btn-slot" id="slot-btn-superscript"></span>
                         <span class="btn-slot" id="slot-btn-subscript"></span>

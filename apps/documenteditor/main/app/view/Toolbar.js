@@ -330,16 +330,23 @@ define([
                     });
                     this.paragraphControls.push(this.btnItalic);
 
-                    this.btnUnderline = new Common.UI.Button({
-                        id: 'id-toolbar-btn-underline',
+					this.btnUnderline = new Common.UI.Button({
+						id: 'id-toolbar-btn-underline',
                         cls: 'btn-toolbar',
                         iconCls: 'toolbar__icon btn-underline',
                         lock: [_set.paragraphLock, _set.headerLock, _set.richEditLock, _set.plainEditLock, _set.previewReviewMode, _set.viewFormMode, _set.lostConnect, _set.disableOnStart, _set.docLockView, _set.docLockForms, _set.docLockComments, _set.viewMode],
-                        enableToggle: true,
+						enableToggle: true,
+						allowDepress: true,
+						split: true,
+                        menu: true,
+						auto: true,
+						eyeDropper: true,
                         dataHint: '1',
-                        dataHintDirection: 'bottom'
+                        dataHintDirection: 'bottom',
+                        dataHintOffset: '0, -6'
                     });
-                    this.paragraphControls.push(this.btnUnderline);
+					this.paragraphControls.push(this.btnUnderline);
+                    this.textOnlyControls.push(this.btnUnderline);
 
                     this.btnStrikeout = new Common.UI.Button({
                         id: 'id-toolbar-btn-strikeout',
@@ -707,7 +714,7 @@ define([
                         dataHintOffset: '0, -6'
                     });
                     this.paragraphControls.push(this.btnMultilevels);
-                    this.textOnlyControls.push(this.btnMultilevels);
+                    this.textOnlyControls.push(this.btnMultilevels);				
 
                     var clone = function (source) {
                         var obj = {};
@@ -726,7 +733,7 @@ define([
                         }
                     };
                     this.mnuNumbersPicker = clone(this.mnuMarkersPicker);
-                    this.mnuMultilevelPicker = clone(this.mnuMarkersPicker);
+                    this.mnuMultilevelPicker = clone(this.mnuMarkersPicker);                    
 
                     this.btnInsertTable = new Common.UI.Button({
                         id: 'tlbtn-inserttable',
@@ -3074,6 +3081,37 @@ define([
                     maxRows: 8,
                     maxColumns: 10
                 });
+				// underline
+				this.btnUnderline.setMenu(
+                    new Common.UI.Menu({
+                        cls: 'shifted-left',
+                        style: 'min-width: 70px',
+                        items: [
+                            {template: _.template('<div id="id-toolbar-menu-underlines" style="width: 70px;"></div>')},
+                            {caption: '--'},
+                        ]
+                    })
+                );
+				this.mnuUnderlinesPicker = new Common.UI.DataView({
+					el: $('#id-toolbar-menu-underlines'),
+					parentMenu: this.btnUnderline.menu,
+					showLast: false,
+					restoreHeight: 290,
+					groups: new Common.UI.DataViewGroupStore([{id: 'menu-underline-group'}]),
+					store: new Common.UI.DataViewStore([
+						{ group: 'menu-underline-group', type: Asc.UnderlineType.Single, iconCls: Asc.UnderlineType.Single + ''},
+						{ group: 'menu-underline-group', type: Asc.UnderlineType.Dash, iconCls: Asc.UnderlineType.Dash + ''},
+						{ group: 'menu-underline-group', type: Asc.UnderlineType.DotDash, iconCls: Asc.UnderlineType.DotDash + ''},
+						{ group: 'menu-underline-group', type: Asc.UnderlineType.DotDotDash, iconCls: Asc.UnderlineType.DotDotDash + ''},
+						{ group: 'menu-underline-group', type: Asc.UnderlineType.Dotted, iconCls: Asc.UnderlineType.Dotted + ''},
+						{ group: 'menu-underline-group', type: Asc.UnderlineType.Double, iconCls: Asc.UnderlineType.Double + ''},
+						{ group: 'menu-underline-group', type: Asc.UnderlineType.Thick, iconCls: Asc.UnderlineType.Thick + ''},
+						{ group: 'menu-underline-group', type: Asc.UnderlineType.Wave, iconCls: Asc.UnderlineType.Wave + ''},
+						{ group: 'menu-underline-group', type: Asc.UnderlineType.WavyDouble, iconCls: Asc.UnderlineType.WavyDouble + ''}
+					]),
+					itemTemplate: _.template('<div id="<%= id %>" class="item-underline"><svg width="60" height="20" class=\"icon uni-scale\"><use xlink:href=\"#underline-<%= iconCls %>\"></use></svg></div>')
+				});
+				this.btnUnderline.menu.setInnerMenu([{menu: this.mnuUnderlinesPicker, index: 0}]);
             },
 
             onToolbarAfterRender: function(toolbar) {

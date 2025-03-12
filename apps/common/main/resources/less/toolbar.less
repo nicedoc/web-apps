@@ -1196,3 +1196,37 @@ section .field-styles {
         }
     }
 }
+
+#id-toolbar-menu-underlines {
+	.group-items-container {
+		.item {
+			box-shadow: none;
+			&:not(:hover) {
+				box-shadow: none;
+			}
+			&:hover {
+				background-color: @highlight-button-hover-ie;
+				background-color: @highlight-button-hover;
+			}
+		}
+		.selected {
+			background-color: @highlight-button-hover-ie;
+		}
+	}
+}
+
+.item-underline {
+    width: 60px;
+    height: 20px;
+    .icon {
+        width: 60px;
+        height: 20px;
+    }
+
+    svg.icon {
+        display: inline-block;
+        vertical-align: middle;
+        fill: @icon-normal-ie;
+        fill: @icon-normal;
+    }
+}

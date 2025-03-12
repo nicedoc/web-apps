@@ -311,6 +311,8 @@ define([
             toolbar.btnBold.on('click',                                 _.bind(this.onBold, this));
             toolbar.btnItalic.on('click',                               _.bind(this.onItalic, this));
             toolbar.btnUnderline.on('click',                            _.bind(this.onUnderline, this));
+			toolbar.mnuUnderlinesPicker.on('item:click',                _.bind(this.onSelectUnderline, this, toolbar.btnUnderline));
+			toolbar.btnUnderline.menu.on('show:after',                 _.bind(this.onUnderlineListShowAfter, this, 0, toolbar.mnuUnderlinesPicker));
             toolbar.btnStrikeout.on('click',                            _.bind(this.onStrikeout, this));
             toolbar.btnSuperscript.on('click',                          _.bind(this.onSuperscript, this));
             toolbar.btnSubscript.on('click',                            _.bind(this.onSubscript, this));
@@ -334,10 +336,10 @@ define([
             toolbar.cmbFontSize.on('combo:focusin',                     _.bind(this.onComboOpen, this, false));
             toolbar.cmbFontSize.on('show:after',                        _.bind(this.onComboOpen, this, true));
             toolbar.cmbFontSize.on('hide:after',                        _.bind(this.onHideMenus, this));
-            toolbar.mnuMarkersPicker.on('item:click',                   _.bind(this.onSelectBullets, this, toolbar.btnMarkers));
+            toolbar.mnuMarkersPicker.on('item:click',                   _.bind(this.onSelectBullets, this, toolbar.btnMarkers));			
             toolbar.mnuNumbersPicker.on('item:click',                   _.bind(this.onSelectBullets, this, toolbar.btnNumbers));
             toolbar.mnuMultilevelPicker.on('item:click',                _.bind(this.onSelectBullets, this, toolbar.btnMultilevels));
-            toolbar.btnMarkers.menu.on('show:after',                    _.bind(this.onListShowAfter, this, 0, toolbar.mnuMarkersPicker));
+            toolbar.btnMarkers.menu.on('show:after',                    _.bind(this.onListShowAfter, this, 0, toolbar.mnuMarkersPicker));			
             toolbar.btnNumbers.menu.on('show:after',                    _.bind(this.onListShowAfter, this, 1, toolbar.mnuNumbersPicker));
             toolbar.btnMultilevels.menu.on('show:after',                _.bind(this.onListShowAfter, this, 2, toolbar.mnuMultilevelPicker));
             toolbar.mnuMarkerSettings.on('click',                       _.bind(this.onMarkerSettingsClick, this, 0));
@@ -558,7 +560,7 @@ define([
 
         onApiUnderline: function(on) {
             if (this._state.underline !== on) {
-                this.toolbar.btnUnderline.toggle(on === true, true);
+                this.toolbar.btnUnderline.toggle(on !== Asc.UnderlineType.None, true);
                 this._state.underline = on;
             }
         },
@@ -1246,6 +1248,33 @@ define([
             Common.NotificationCenter.trigger('edit:complete', this.toolbar);
             Common.component.Analytics.trackEvent('ToolBar', 'Underline');
         },
+		onSelectUnderline: function(btn, picker, itemView, record) {
+            var isPickerSelect = _.isFunction(record.toJSON);
+
+            if (isPickerSelect){
+				var type = record.get('type');
+				if (this.api) {
+					this.api.put_TextPrUnderline(type);
+				}
+				Common.NotificationCenter.trigger('edit:complete', this.toolbar);
+            	Common.component.Analytics.trackEvent('ToolBar', 'Underline');
+            }
+        },
+
+		onUnderlineListShowAfter: function(type, picker, menu, e) {
+			if (!(e && e.target===e.currentTarget))
+                return;
+			var type = this._state.underline;
+			picker.deselectAll(true);
+			var store = picker.store;
+            for (var i=0; i<store.length; i++) {
+                var item = store.at(i);
+				if (item.get('type') === type) {
+					picker.selectByIndex(i, true);
+					break;
+				}
+            }
+		},
 
         onStrikeout: function(btn, e) {
             this._state.strike = undefined;
@@ -2964,7 +2993,7 @@ define([
             me.toolbar.btnInsertShape.menu.addItem(menuitem);
 
             var recents = Common.localStorage.getItem('de-recent-shapes');
-
+			
             var shapePicker = new Common.UI.DataViewShape({
                 el: $('#id-toolbar-menu-insertshape'),
                 itemTemplate: _.template('<div class="item-shape" id="<%= id %>"><svg width="20" height="20" class=\"icon uni-scale\"><use xlink:href=\"#svg-icon-<%= data.shapeType %>\"></use></svg></div>'),
