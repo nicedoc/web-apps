@@ -3095,7 +3095,7 @@ define([
 				this.mnuUnderlinesPicker = new Common.UI.DataView({
 					el: $('#id-toolbar-menu-underlines'),
 					parentMenu: this.btnUnderline.menu,
-					showLast: false,
+					showLast: true,
 					restoreHeight: 290,
 					groups: new Common.UI.DataViewGroupStore([{id: 'menu-underline-group'}]),
 					store: new Common.UI.DataViewStore([

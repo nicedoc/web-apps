@@ -1241,9 +1241,21 @@ define([
         },
 
         onUnderline: function(btn, e) {
-            this._state.underline = undefined;
-            if (this.api)
-                this.api.put_TextPrUnderline(btn.pressed);
+			var oldV = this._state.underline;
+			this._state.underline = undefined;
+            if (this.api) {
+				var type = btn.pressed;
+				if (oldV == Asc.UnderlineType.None) { // 原本无下划线
+					if (this.toolbar.mnuUnderlinesPicker) {
+						var rec = this.toolbar.mnuUnderlinesPicker.getSelectedRec();
+						if (rec) {
+							// 读取上次选中的类型
+							type = rec.get('type');
+						}
+					}
+				}
+				this.api.put_TextPrUnderline(type);
+			}
 
             Common.NotificationCenter.trigger('edit:complete', this.toolbar);
             Common.component.Analytics.trackEvent('ToolBar', 'Underline');
